@@ -1,3 +1,25 @@
+
+from PIL import Image
+
+def make_background_transparent(image_path):
+    img = Image.open(image_path).convert("RGBA")
+    datas = img.getdata()
+    new_data = []
+    target_rgb = (255, 251, 240)
+    tolerance = 10
+
+    for item in datas:
+        r, g, b, a = item
+        if abs(r - target_rgb[0]) <= tolerance and abs(g - target_rgb[1]) <= tolerance and abs(b - target_rgb[2]) <= tolerance:
+            new_data.append((r, g, b, 0))
+        else:
+            new_data.append(item)
+
+    img.putdata(new_data)
+    output_path = image_path.replace(".png", "_透過.png")
+    img.save(output_path)
+    return output_path
+
 from PyQt6.QtWidgets import QApplication, QLabel, QFileDialog, QWidget
 from PyQt6.QtGui import QPixmap, QImage, QMouseEvent, QPainter, QPen
 from PyQt6.QtCore import Qt, QPoint
